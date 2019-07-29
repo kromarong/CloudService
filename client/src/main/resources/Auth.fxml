@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ru.kromarong.client.AuthController"
+            prefHeight="400.0" prefWidth="600.0">
+
+<HBox>
+
+    <VBox fx:id="loginWindow" alignment="CENTER" prefHeight="400.0" prefWidth="600.0"
+          style="-fx-background-color: linear-gradient(#fff 0%, #eee 10%, #ddd 90%, #bbb 100%);"
+          xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.172-ea">
+
+        <TextField fx:id="tfLogin" focusTraversable="false"
+                   promptText="Введите логин" maxWidth="200" layoutY="150"/>
+        <PasswordField fx:id="tfPassword" focusTraversable="false"
+                   promptText="Введите пароль" maxWidth="200"/>
+        <Button fx:id="btLogin" onAction="#loginBtn" text="Войти"/>
+        <Hyperlink fx:id="lRegistration" onAction="#registration" text="Зарегистрироваться"  />
+
+    </VBox>
+</HBox>
+</AnchorPane>
