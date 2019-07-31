@@ -33,6 +33,7 @@ public class ConnectToDataBase {
         if (rs.next()) {
             return false;
         }
+
         PreparedStatement createUser = connection.prepareStatement("INSERT INTO users (login, password) values (?,?)");
         createUser.setString(1, login);
         createUser.setString(2, password);

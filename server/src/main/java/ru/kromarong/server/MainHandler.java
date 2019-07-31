@@ -22,6 +22,7 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+
         if (!(msg instanceof Command)){
             ctx.fireChannelRead(msg);
             return;
@@ -41,11 +42,9 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
             sendFilesList(ctx);
         }
 
-        if (command.getCommand().split(" ")[0].equals("/DOWNLOAD")){
-
+        if (command.getCommand().split(" ")[0].equals(CMDList.DOWNLOAD)){
             String filename = command.getCommand().split("\u0000")[1];
             String filepath = path + filename;
-            System.out.println(" пришел запрос на скачивание файла " + filename);
             ctx.writeAndFlush(new FileMessage(filename, filepath));
         }
 
@@ -57,11 +56,10 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
                 sendFilesList(ctx);
             }
         }
-
     }
 
     private void sendFilesList(ChannelHandlerContext ctx) throws IOException {
-        StringBuilder sb = new StringBuilder("/FILES_LIST ");
+        StringBuilder sb = new StringBuilder(CMDList.FILES_LIST + " ");
         List<String> filesList = new ArrayList<>();
         Files.list(Paths.get(path)).map(p -> p.getFileName().toString()).forEach(o -> filesList.add(o));
         sb.append(filesList.size() + " " + "\u0000");

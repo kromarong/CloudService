@@ -8,7 +8,6 @@ import ru.kromarong.common.Command;
 import ru.kromarong.common.DataType;
 import ru.kromarong.common.ProtocolHandler;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 public class AuthHandler extends ChannelInboundHandlerAdapter {
@@ -26,8 +25,7 @@ public class AuthHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws SQLException, IOException {
-        System.out.println("состояние авторизации: " + authOk);
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws SQLException {
 
         if (authOk) {
             ctx.fireChannelRead(msg);
@@ -40,27 +38,24 @@ public class AuthHandler extends ChannelInboundHandlerAdapter {
         type = DataType.getDataTypeFromByte(firstByte);
         if (type == DataType.COMMAND) {
             commandLen = 4;
-            System.out.println(type);
 
             if (buf.readableBytes() < commandLen) {
-                System.out.println("Вылет на первой проверке");
                 return;
             }
             commandLen = buf.readInt();
-            System.out.println("text size: " + commandLen);
 
             if (buf.readableBytes() < commandLen) {
                 return;
             }
+
             byte[] data = new byte[commandLen];
             buf.readBytes(data);
             command = new String(data);
-            System.out.println(type + " " + command);
+
             String actionType = command.split(" ")[0];
             if (actionType.equals(CMDList.AUTH) || actionType.equals(CMDList.REGISTRATION)) {
                 String username = command.split(" ")[1];
                 String password = command.split(" ")[2];
-                System.out.println(username + " " + password);
 
                 if (actionType.equals(CMDList.AUTH)){
                     authOk = connect.checkUser(username, password);
@@ -77,6 +72,7 @@ public class AuthHandler extends ChannelInboundHandlerAdapter {
                         ctx.writeAndFlush(new Command(CMDList.REG_ERROR));
                     }
                 }
+                System.out.println("auth: " + authOk);
             }
         }
     }
