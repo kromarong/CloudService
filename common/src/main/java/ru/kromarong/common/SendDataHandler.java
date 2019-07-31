@@ -9,8 +9,6 @@ import io.netty.util.ReferenceCountUtil;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class SendDataHandler extends ChannelOutboundHandlerAdapter {
 
@@ -26,7 +24,6 @@ public class SendDataHandler extends ChannelOutboundHandlerAdapter {
             cmdBuf.writeInt(authBytes.length);
             cmdBuf.writeBytes(authBytes);
 
-            System.out.println("sending command " + command.getCommand());
             ctx.writeAndFlush(cmdBuf);
             cmdBuf.release();
         }
@@ -41,9 +38,6 @@ public class SendDataHandler extends ChannelOutboundHandlerAdapter {
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
             long size = file.length();
             byte[] data = new byte[1024 * 1024];
-
-            System.out.println("размер буфера " + buf.maxCapacity());
-            System.out.println("размер файла  " + size);
 
             buf.writeByte(15);
             buf.writeInt(filenameBytes.length);
@@ -67,9 +61,6 @@ public class SendDataHandler extends ChannelOutboundHandlerAdapter {
             ReferenceCountUtil.retain(buf);
             buf.release();
             bis.close();
-            System.out.println("SDH sending file " + fm.getFilename());
-
         }
-
     }
 }

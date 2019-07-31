@@ -3,6 +3,7 @@ package ru.kromarong.common;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,9 +37,8 @@ public class ProtocolHandler extends ChannelInboundHandlerAdapter {
                 state = 0;
                 stringLen = 4;
                 fileLen = -1;
-                System.out.println(type);
             }
-//            считываем длину имени файла или команды
+
             if (state == 0) {
                 if (buf.readableBytes() < stringLen) {
                     return;
@@ -46,7 +46,7 @@ public class ProtocolHandler extends ChannelInboundHandlerAdapter {
                 stringLen = buf.readInt();
                 state = 1;
             }
-//        считываем имя файла или команду
+
             if (state == 1) {
                 if (buf.readableBytes() < stringLen) {
                     return;
@@ -54,7 +54,6 @@ public class ProtocolHandler extends ChannelInboundHandlerAdapter {
                 byte[] data = new byte[stringLen];
                 buf.readBytes(data);
                 String str = new String(data);
-                System.out.println(type + " " + str);
                 if (type == DataType.COMMAND) {
                     command = str;
                     ctx.fireChannelRead(new Command(command));
@@ -65,21 +64,22 @@ public class ProtocolHandler extends ChannelInboundHandlerAdapter {
                     state = 2;
                 }
             }
-//            считываем размер файла и проверяем, не существует ли он уже в хранилище
+
             if (state == 2) {
                 if (buf.readableBytes() < fileLen) {
-                    System.out.println("вылет в первом блоке" + buf.readableBytes());
                     return;
                 }
                 fileLen = buf.readLong();
                 File f = new File(path + fileName);
                 if (f.exists()){
-                    fileName = "(copy)" + fileName;
+                    String temp1 = fileName.substring(0, fileName.lastIndexOf('.'));
+                    String temp2 = fileName.substring(fileName.lastIndexOf('.'));
+                    fileName = temp1 + "(copy)" + temp2;
+
                 }
                 state = 3;
             }
 
-//            пишем данные в файл
             if (state == 3) {
                 byte[] data;
                 if (fileLen >= buf.readableBytes()) {
