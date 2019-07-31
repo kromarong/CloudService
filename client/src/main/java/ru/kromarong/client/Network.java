@@ -53,10 +53,6 @@ public class Network {
 
     private Channel currentChannel;
 
-    public Channel getCurrentChannel() {
-        return currentChannel;
-    }
-
     public void start() {
         Thread t = new Thread(() ->{
             EventLoopGroup group = new NioEventLoopGroup();

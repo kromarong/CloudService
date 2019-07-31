@@ -56,13 +56,11 @@ public class MainController implements Initializable {
 
 
     public void refreshServerFilesList(List<String> filesName) {
-        System.out.println("пытаемся обновить список файлов на сервере");
         updateUI(() -> {
             serverFilesList.getItems().clear();
             for (String value : filesName) {
                 serverFilesList.getItems().add(value);
             }
-            System.out.println(filesName);
         });
     }
 
