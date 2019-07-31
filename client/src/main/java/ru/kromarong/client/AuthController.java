@@ -25,13 +25,23 @@ public class AuthController implements Initializable {
     PasswordField tfPassword;
 
     @FXML
+    PasswordField tfConfirmPassword;
+
+    @FXML
     Button btLogin;
+
+    @FXML
+    Hyperlink lRegistration;
 
     private String reg = "Зарегистрироваться";
 
     public void loginBtn(ActionEvent actionEvent) {
         if (!tfLogin.getText().equals("") && !tfPassword.getText().equals("")) {
             if (btLogin.getText().equals(reg)) {
+                if (!tfLogin.getText().equals(tfConfirmPassword.getText())){
+                    showIncorrectPasswordAlert();
+                    return;
+                }
                 Network.getInstance().sendCommand(CMDList.REGISTRATION + " " + tfLogin.getText() + " " + tfPassword.getText());
             } else {
                 Network.getInstance().sendCommand(CMDList.AUTH + " " + tfLogin.getText() + " " + tfPassword.getText());
@@ -39,15 +49,15 @@ public class AuthController implements Initializable {
         }
     }
 
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Thread t = new Thread(() -> {
             try{
 
             while (true) {
-                boolean auth = Network.getInstance().isAuth();
-                if (auth) {
-                    System.out.println("trying set new scene");
+                if (Network.getInstance().isAuth()) {
                     changeScene();
                     break;
                 } else {
@@ -77,6 +87,20 @@ public class AuthController implements Initializable {
             if (result.get().getText().equals("OK")) {
                 tfLogin.clear();
                 tfPassword.clear();
+            }
+        });
+    }
+
+    private void showIncorrectPasswordAlert() {
+        updateUI(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Введенные пароли не совпадают", ButtonType.OK);
+            alert.setTitle("Ошибка регистрации!");
+            alert.setHeaderText("");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get().getText().equals("OK")) {
+                tfLogin.clear();
+                tfPassword.clear();
+                tfConfirmPassword.clear();
             }
         });
     }
@@ -118,7 +142,20 @@ public class AuthController implements Initializable {
 
     public void registration(ActionEvent actionEvent) {
         updateUI(() -> {
-            btLogin.setText(reg);
+            if (lRegistration.getText().equals(reg)){
+                btLogin.setText(reg);
+                tfLogin.setPromptText("Введите желаемый логин");
+                tfPassword.setPromptText("Придумайте пароль");
+                tfConfirmPassword.setVisible(true);
+                lRegistration.setText("Вход");
+            } else {
+                btLogin.setText("Войти");
+                tfLogin.setPromptText("Введите логин");
+                tfPassword.setPromptText("Введите пароль");
+                tfConfirmPassword.setVisible(false);
+                lRegistration.setText(reg);
+            }
+
         });
     }
 }

@@ -7,6 +7,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ru.kromarong.client.AuthController"
@@ -18,10 +20,17 @@
           style="-fx-background-color: linear-gradient(#fff 0%, #eee 10%, #ddd 90%, #bbb 100%);"
           xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.172-ea">
 
+        <ImageView fx:id="logo">
+            <image>
+                <Image url="logo.png"></Image>
+            </image>
+        </ImageView>
         <TextField fx:id="tfLogin" focusTraversable="false"
                    promptText="Введите логин" maxWidth="200" layoutY="150"/>
         <PasswordField fx:id="tfPassword" focusTraversable="false"
                    promptText="Введите пароль" maxWidth="200"/>
+        <PasswordField fx:id="tfConfirmPassword" focusTraversable="false"
+                       promptText="Повторите пароль" visible="false" VBox.vgrow="SOMETIMES" maxWidth="200"/>
         <Button fx:id="btLogin" onAction="#loginBtn" text="Войти"/>
         <Hyperlink fx:id="lRegistration" onAction="#registration" text="Зарегистрироваться"  />
 
